@@ -1,8 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-from fastmcp import FastMCP
-from fastmcp.transports.http import HTTPTransport
+from fastmcp import FastMCP, HTTPTransport
 
 # Load .env file
 load_dotenv()
@@ -56,4 +55,4 @@ def cancel_order(order_id: str):
 
 # --- Run the MCP server ---
 if __name__ == "__main__":
-    app.run()
+    app.run()  # Do NOT pass host/port here
