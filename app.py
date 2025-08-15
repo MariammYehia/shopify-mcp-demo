@@ -1,19 +1,23 @@
 import os
 import requests
-from fastmcp import FastMCP
 from dotenv import load_dotenv
+from fastmcp import FastMCP
+from fastmcp.transports.http import HTTPTransport
 
-# Load our .env file (Shopify store + token)
+# Load .env file
 load_dotenv()
 
 SHOPIFY_STORE = os.environ.get("SHOPIFY_STORE")
 SHOPIFY_TOKEN = os.environ.get("SHOPIFY_TOKEN")
+PORT = int(os.environ.get("PORT", 8000))
 
-# Create the MCP app
-app = FastMCP("Shopify Demo MCP Server")
+# Create MCP app with HTTP transport for Render
+app = FastMCP(
+    "Shopify Demo MCP Server",
+    transport=HTTPTransport(host="0.0.0.0", port=PORT)
+)
 
-
-# Function to make requests to Shopify
+# --- Shopify request helper ---
 def shopify_request(method, endpoint, params=None, data=None):
     url = f"https://{SHOPIFY_STORE}/admin/api/2024-07/{endpoint}"
     headers = {
@@ -23,9 +27,8 @@ def shopify_request(method, endpoint, params=None, data=None):
     resp = requests.request(method, url, headers=headers, params=params, json=data)
     resp.raise_for_status()
     return resp.json()
-    
 
-# --- MCP tool ---
+# --- MCP tools ---
 @app.tool()
 def get_order(order_id: str):
     return shopify_request("GET", f"orders/{order_id}.json")
@@ -51,7 +54,6 @@ def update_shipping_address(order_id: str, address: dict):
 def cancel_order(order_id: str):
     return shopify_request("POST", f"orders/{order_id}/cancel.json")
 
-
 # --- Run the MCP server ---
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    app.run()
