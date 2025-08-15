@@ -1,6 +1,6 @@
 import os
 import requests
-from fastmcp import FastMCP
+from fastmcp import FastMCP, HTTPTransport
 from dotenv import load_dotenv
 
 # Load our .env file (Shopify store + token)
@@ -10,7 +10,7 @@ SHOPIFY_STORE = os.environ.get("SHOPIFY_STORE")
 SHOPIFY_TOKEN = os.environ.get("SHOPIFY_TOKEN")
 
 # Create the MCP app
-app = FastMCP("Shopify Demo MCP Server")
+app = FastMCP("Shopify Demo MCP Server", transport=HTTPTransport())
 
 
 # Function to make requests to Shopify
@@ -83,5 +83,4 @@ def cancel_order(order_id: str):
 
 # --- Run the MCP server ---
 if __name__ == "__main__":
-    # Use host 0.0.0.0 and the port provided by Render
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    app.run()
