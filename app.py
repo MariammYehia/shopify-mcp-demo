@@ -3,14 +3,13 @@ import requests
 from dotenv import load_dotenv
 from fastmcp import FastMCP, HTTPTransport
 
-# Load .env file
+# --- Load environment variables ---
 load_dotenv()
-
 SHOPIFY_STORE = os.environ.get("SHOPIFY_STORE")
 SHOPIFY_TOKEN = os.environ.get("SHOPIFY_TOKEN")
 PORT = int(os.environ.get("PORT", 8000))
 
-# Create MCP app with HTTP transport for Render
+# --- Create MCP app with HTTP transport ---
 app = FastMCP(
     "Shopify Demo MCP Server",
     transport=HTTPTransport(host="0.0.0.0", port=PORT)
@@ -55,4 +54,4 @@ def cancel_order(order_id: str):
 
 # --- Run the MCP server ---
 if __name__ == "__main__":
-    app.run()  # Do NOT pass host/port here
+    app.run()  # Host/port are handled by HTTPTransport
